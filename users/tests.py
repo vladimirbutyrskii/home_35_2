@@ -20,12 +20,11 @@ class UserTests(TestCase):
             first_name="Test",
             last_name="User",
             phone="123456789",
-            city="Test City"
+            city="Test City",
         )
 
         self.other_user = User.objects.create_user(
-            email="other@test.com",
-            password="testpass123"
+            email="other@test.com", password="testpass123"
         )
 
     def test_register_user(self):
@@ -35,7 +34,7 @@ class UserTests(TestCase):
             "email": "newuser@test.com",
             "password": "newpass123",
             "first_name": "New",
-            "last_name": "User"
+            "last_name": "User",
         }
 
         response = self.client.post(url, data)
@@ -100,27 +99,22 @@ class PaymentTests(TestCase):
         self.client = APIClient()
 
         self.user = User.objects.create_user(
-            email="user@test.com",
-            password="testpass123"
+            email="user@test.com", password="testpass123"
         )
 
         self.course = Course.objects.create(
-            name="Test Course",
-            description="Test Description"
+            name="Test Course", description="Test Description"
         )
 
         self.lesson = Lesson.objects.create(
             name="Test Lesson",
             description="Test Description",
             course=self.course,
-            link_video="https://www.youtube.com/watch?v=test"
+            link_video="https://www.youtube.com/watch?v=test",
         )
 
         self.payment = Payment.objects.create(
-            payer=self.user,
-            amount=1000,
-            type="cash",
-            paid_course=self.course
+            payer=self.user, amount=1000, type="cash", paid_course=self.course
         )
 
     def test_list_payments_authenticated(self):
@@ -136,10 +130,7 @@ class PaymentTests(TestCase):
     def test_list_payments_filter_by_type(self):
         """Тест фильтрации платежей по типу"""
         Payment.objects.create(
-            payer=self.user,
-            amount=2000,
-            type="bank",
-            paid_lesson=self.lesson
+            payer=self.user, amount=2000, type="bank", paid_lesson=self.lesson
         )
 
         self.client.force_authenticate(user=self.user)
@@ -158,7 +149,7 @@ class PaymentTests(TestCase):
             amount=2000,
             type="bank",
             paid_lesson=self.lesson,
-            payment_date=date(2025, 4, 1)
+            payment_date=date(2025, 4, 1),
         )
 
         self.client.force_authenticate(user=self.user)

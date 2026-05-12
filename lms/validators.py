@@ -10,7 +10,7 @@ def validate_youtube_link(value):
         return value
 
     # Регулярное выражение для проверки youtube ссылок
-    youtube_pattern = r'^(https?://)?(www\.)?(youtube\.com|youtu\.be)/'
+    youtube_pattern = r"^(https?://)?(www\.)?(youtube\.com|youtu\.be)/"
 
     if not re.match(youtube_pattern, value):
         raise ValidationError(
