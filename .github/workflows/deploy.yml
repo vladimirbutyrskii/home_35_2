@@ -2,12 +2,12 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ feature/home_33 ]
+    branches: [ feature/home_35_2 ]
   pull_request:
-    branches: [ feature/home_33 ]
+    branches: [ feature/home_35_2 ]
 
 env:
-  DOCKER_IMAGE: your-dockerhub-username/home_33
+  DOCKER_IMAGE: your-dockerhub-username/home_35_2
   DOCKER_TAG: latest
 
 jobs:
@@ -69,7 +69,7 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd /app/home_33
+            cd /app/home_35_2
             docker compose -f docker-compose.prod.yml down
             docker pull ${{ env.DOCKER_IMAGE }}:${{ env.DOCKER_TAG }}
             echo "SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}" > .env
