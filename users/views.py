@@ -15,7 +15,6 @@ from drf_spectacular.utils import extend_schema, extend_schema_view, OpenApiResp
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
-from django.conf import settings
 
 from lms.models import Course
 from users.services import process_payment, create_payment_intent

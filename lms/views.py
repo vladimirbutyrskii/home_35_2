@@ -2,8 +2,8 @@ from rest_framework import viewsets, generics
 from rest_framework.permissions import IsAuthenticated
 
 from lms.models import Course, Lesson, Subscription
-from lms.serializers import CourseSerializer, LessonSerializer, SubscriptionSerializer
-from lms.permissions import IsModerator, IsOwner, IsOwnerOrReadOnly
+from lms.serializers import CourseSerializer, LessonSerializer
+from lms.permissions import IsModerator, IsOwner
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -13,15 +13,17 @@ from lms.serializers import SubscriptionSerializer
 
 from lms.paginators import CoursePaginator, LessonPaginator
 from drf_spectacular.utils import extend_schema, extend_schema_view, OpenApiResponse
-from drf_spectacular.types import OpenApiTypes
+
+from django.utils import timezone
+from lms.tasks import send_course_update_notification
 
 
 @extend_schema_view(
     list=extend_schema(
         summary="Получить список курсов",
         description="Возвращает список всех курсов с пагинацией. "
-        "Для каждого курса показывает количество уроков, "
-        "список уроков и признак подписки текущего пользователя.",
+                    "Для каждого курса показывает количество уроков, "
+                    "список уроков и признак подписки текущего пользователя.",
         tags=["Курсы"],
     ),
     retrieve=extend_schema(
@@ -32,7 +34,7 @@ from drf_spectacular.types import OpenApiTypes
     create=extend_schema(
         summary="Создать курс",
         description="Создает новый курс. Доступно только для авторизованных пользователей, "
-        "не являющихся модераторами.",
+                    "не являющихся модераторами.",
         tags=["Курсы"],
     ),
     update=extend_schema(
@@ -107,8 +109,8 @@ class CourseViewSet(viewsets.ModelViewSet):
 @extend_schema(
     summary="Создать урок",
     description="Создает новый урок в указанном курсе. "
-    "Доступно только для авторизованных пользователей, не являющихся модераторами. "
-    "Ссылка на видео должна вести на youtube.com.",
+                "Доступно только для авторизованных пользователей, не являющихся модераторами. "
+                "Ссылка на видео должна вести на youtube.com.",
     tags=["Уроки"],
     request=LessonSerializer,
     responses={
@@ -135,7 +137,7 @@ class LessonCreateAPIView(generics.CreateAPIView):
 @extend_schema(
     summary="Список уроков",
     description="Возвращает список уроков с пагинацией. "
-    "Модераторы видят все уроки, обычные пользователи — только свои.",
+                "Модераторы видят все уроки, обычные пользователи — только свои.",
     tags=["Уроки"],
 )
 class LessonListAPIView(generics.ListAPIView):
@@ -195,7 +197,7 @@ class LessonDeleteAPIView(generics.DestroyAPIView):
 @extend_schema(
     summary="Управление подпиской",
     description="Добавляет или удаляет подписку пользователя на курс. "
-    "Если подписка существует — удаляет, если нет — создает.",
+                "Если подписка существует — удаляет, если нет — создает.",
     tags=["Подписки"],
     request={
         "application/json": {
