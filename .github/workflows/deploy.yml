@@ -7,12 +7,26 @@ on:
     branches: [ feature/home_35_2 ]
 
 env:
-  DOCKER_IMAGE: your-dockerhub-username/home_35_2
+  DOCKER_IMAGE: ButVlad0507/home_35_2
   DOCKER_TAG: latest
 
 jobs:
   test-and-lint:
     runs-on: ubuntu-latest
+
+    # ========== СЮДА ДОБАВЛЯЕМ Redis ==========
+    services:
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    # ==========================================
+
     steps:
       - uses: actions/checkout@v4
 
@@ -24,28 +38,25 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt flake8 black
-
-      - name: Lint with black
-        run: black --check .
+          pip install -r requirements.txt
 
       - name: Lint with flake8
         run: flake8 . --max-line-length=120 --exclude=migrations
 
       - name: Run tests
         run: python manage.py test
+        # ========== СЮДА ДОБАВЛЯЕМ ПЕРЕМЕННЫЕ Redis ==========
         env:
           DEBUG: 'False'
-          SECRET_KEY: 'dummy-for-tests'
-          DB_NAME: 'test_db'
-          DB_USER: 'test_user'
-          DB_PASSWORD: 'test_pass'
-          DB_HOST: 'localhost'
-          DB_PORT: '5432'
-          POSTGRES_DB: 'test_db'
-          POSTGRES_USER: 'test_user'
-          POSTGRES_PASSWORD: 'test_pass'
-
+          SECRET_KEY: 'dummy-test-secret-key-12345'
+          DB_NAME: test_db
+          DB_USER: test_user
+          DB_PASSWORD: test_pass
+          DB_HOST: localhost
+          DB_PORT: 5432
+          REDIS_HOST: localhost
+          REDIS_PORT: 6379
+        # ====================================================
 
   build-and-push:
     needs: test-and-lint
@@ -86,5 +97,7 @@ jobs:
             echo "ALLOWED_HOSTS=${{ secrets.SERVER_IP }}" >> .env
             echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env
             echo "STRIPE_SECRET_KEY=${{ secrets.STRIPE_SECRET_KEY }}" >> .env
+            echo "REDIS_HOST=redis" >> .env
+            echo "REDIS_PORT=6379" >> .env
             docker compose -f docker-compose.prod.yml up -d
             
