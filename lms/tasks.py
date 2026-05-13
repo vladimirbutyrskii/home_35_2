@@ -24,7 +24,7 @@ def send_course_update_notification(course_id):
         send_mail(
             subject=f"Обновление курса: {course.name}",
             message=f'Курс "{course.name}" был обновлен. Зайдите на платформу для просмотра новых материалов.'
-                    f'\n\nСсылка: http://localhost:8000/courses/{course.id}/',
+            f"\n\nСсылка: http://localhost:8000/courses/{course.id}/",
             from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=recipient_list,
             fail_silently=False,
