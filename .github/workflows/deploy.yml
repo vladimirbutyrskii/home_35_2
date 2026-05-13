@@ -37,6 +37,15 @@ jobs:
         env:
           DEBUG: 'False'
           SECRET_KEY: 'dummy-for-tests'
+          DB_NAME: 'test_db'
+          DB_USER: 'test_user'
+          DB_PASSWORD: 'test_pass'
+          DB_HOST: 'localhost'
+          DB_PORT: '5432'
+          POSTGRES_DB: 'test_db'
+          POSTGRES_USER: 'test_user'
+          POSTGRES_PASSWORD: 'test_pass'
+
 
   build-and-push:
     needs: test-and-lint
