@@ -10,6 +10,13 @@ jobs:
   test-and-lint:
     runs-on: ubuntu-latest
 
+
+    # !!! ДОБАВЬТЕ ЭТОТ БЛОК НА УРОВНЕ WORKFLOW !!!
+    permissions:
+      contents: read
+      packages: write   # <-- ЭТО ГЛАВНОЕ
+
+
     services:
       redis:
         image: redis:7-alpine
