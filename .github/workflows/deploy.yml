@@ -6,16 +6,14 @@ on:
   pull_request:
     branches: [ feature/home_35_2 ]
 
+# !!! ДОБАВЬТЕ ЭТОТ БЛОК НА УРОВНЕ WORKFLOW !!!
+permissions:
+  contents: read
+  packages: write   # <-- ЭТО ГЛАВНОЕ
+
 jobs:
   test-and-lint:
     runs-on: ubuntu-latest
-
-
-    # !!! ДОБАВЬТЕ ЭТОТ БЛОК НА УРОВНЕ WORKFLOW !!!
-    permissions:
-      contents: read
-      packages: write   # <-- ЭТО ГЛАВНОЕ
-
 
     services:
       redis:
