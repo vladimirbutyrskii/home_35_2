@@ -83,9 +83,9 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd /app/home_35_2
+            cd /home/ubuntu/home_35_2
             docker compose -f docker-compose.prod.yml down
-            docker pull ghcr.io/${{ github.repository }}:latest
+            docker pull ghcr.io/vladimirbutyrskii/home_35_2:latest
             echo "SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}" > .env
             echo "DEBUG=False" >> .env
             echo "ALLOWED_HOSTS=${{ secrets.SERVER_IP }}" >> .env
