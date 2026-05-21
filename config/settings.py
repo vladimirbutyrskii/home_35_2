@@ -1,4 +1,5 @@
 import os
+import sys
 from pathlib import Path
 from dotenv import load_dotenv
 from datetime import timedelta
@@ -13,8 +14,7 @@ SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-default-key-for-dev")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
 # Application definition
 
@@ -25,15 +25,14 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-
     "rest_framework",
     "rest_framework_simplejwt",
     "django_filters",
     "drf_spectacular",
     "lms",
     "users",
-    'django_celery_beat',
-    'django_celery_results',
+    "django_celery_beat",
+    "django_celery_results",
 ]
 
 MIDDLEWARE = [
@@ -148,26 +147,29 @@ STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY")
 STRIPE_PUBLIC_KEY = os.getenv("STRIPE_PUBLIC_KEY")
 
 # Настройки Celery
-CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', f"redis://{os.getenv('REDIS_HOST', 'localhost')}:"
-                                                   f"{os.getenv('REDIS_PORT', '6379')}/{os.getenv('REDIS_DB', '0')}")
-CELERY_RESULT_BACKEND = 'django-db'
-CELERY_ACCEPT_CONTENT = ['json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
-CELERY_TIMEZONE = 'UTC'
+CELERY_BROKER_URL = os.getenv(
+    "CELERY_BROKER_URL",
+    f"redis://{os.getenv('REDIS_HOST', 'localhost')}:"
+    f"{os.getenv('REDIS_PORT', '6379')}/{os.getenv('REDIS_DB', '0')}",
+)
+CELERY_RESULT_BACKEND = "django-db"
+CELERY_ACCEPT_CONTENT = ["json"]
+CELERY_TASK_SERIALIZER = "json"
+CELERY_RESULT_SERIALIZER = "json"
+CELERY_TIMEZONE = "UTC"
 
 # Настройки для периодических задач
-CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 
 CELERY_BEAT_SCHEDULE = {
-    'deactivate-inactive-users-daily': {
-        'task': 'users.tasks.deactivate_inactive_users',
-        'schedule': timedelta(days=1),  # каждые 24 часа
-        'options': {'expires': 3600},
+    "deactivate-inactive-users-daily": {
+        "task": "users.tasks.deactivate_inactive_users",
+        "schedule": timedelta(days=1),  # каждые 24 часа
+        "options": {"expires": 3600},
     },
-    'debug-task-every-60-seconds': {
-        'task': 'lms.tasks.debug_periodic_task',
-        'schedule': timedelta(seconds=60),  # каждые 60 секунд
+    "debug-task-every-60-seconds": {
+        "task": "lms.tasks.debug_periodic_task",
+        "schedule": timedelta(seconds=60),  # каждые 60 секунд
     },
 }
 
@@ -189,10 +191,16 @@ if CACHE_ENABLED:
     CACHES = {
         "default": {
             "BACKEND": "django.core.cache.backends.redis.RedisCache",
-            "LOCATION": os.getenv("REDIS_URL")
+            "LOCATION": os.getenv("REDIS_URL"),
         }
     }
 
 CACHE_TTL = 60 * 15  # 15 минут
 
-
+if "test" in sys.argv:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": ":memory:",
+        }
+    }

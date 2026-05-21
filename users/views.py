@@ -15,7 +15,6 @@ from drf_spectacular.utils import extend_schema, extend_schema_view, OpenApiResp
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
-from django.conf import settings
 
 from lms.models import Course
 from users.services import process_payment, create_payment_intent
@@ -40,8 +39,8 @@ from users.services import process_payment, create_payment_intent
     retrieve=extend_schema(
         summary="Получить профиль пользователя",
         description="Возвращает информацию о пользователе. "
-                    "Для своего профиля — полная информация (с историей платежей), "
-                    "для чужого — только основные данные.",
+        "Для своего профиля — полная информация (с историей платежей), "
+        "для чужого — только основные данные.",
         tags=["Пользователи"],
     ),
     update=extend_schema(
@@ -85,13 +84,33 @@ class UserViewSet(viewsets.ModelViewSet):
 @extend_schema(
     summary="Список платежей",
     description="Возвращает список платежей с возможностью фильтрации и сортировки. "
-                "Модераторы видят все платежи, обычные пользователи — только свои.",
+    "Модераторы видят все платежи, обычные пользователи — только свои.",
     tags=["Платежи"],
     parameters=[
-        {"name": "paid_course", "in": "query", "type": "integer", "description": "Фильтр по ID курса"},
-        {"name": "paid_lesson", "in": "query", "type": "integer", "description": "Фильтр по ID урока"},
-        {"name": "type", "in": "query", "type": "string", "description": "Фильтр по способу оплаты (cash/bank)"},
-        {"name": "ordering", "in": "query", "type": "string", "description": "Сортировка по payment_date или amount"},
+        {
+            "name": "paid_course",
+            "in": "query",
+            "type": "integer",
+            "description": "Фильтр по ID курса",
+        },
+        {
+            "name": "paid_lesson",
+            "in": "query",
+            "type": "integer",
+            "description": "Фильтр по ID урока",
+        },
+        {
+            "name": "type",
+            "in": "query",
+            "type": "string",
+            "description": "Фильтр по способу оплаты (cash/bank)",
+        },
+        {
+            "name": "ordering",
+            "in": "query",
+            "type": "string",
+            "description": "Сортировка по payment_date или amount",
+        },
     ],
 )
 class PaymentListView(generics.ListAPIView):
@@ -111,6 +130,7 @@ class PaymentListView(generics.ListAPIView):
 
 class CreatePaymentView(APIView):
     """Эндпоинт для создания платежа через Stripe"""
+
     permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
@@ -150,6 +170,7 @@ class CreatePaymentView(APIView):
 
 class PaymentIntentView(APIView):
     """Альтернативный эндпоинт с использованием PaymentIntent"""
+
     permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):

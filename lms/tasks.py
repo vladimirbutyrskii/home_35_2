@@ -18,12 +18,13 @@ def send_course_update_notification(course_id):
             return f'Нет подписчиков для курса "{course.name}"'
 
         # Сбор уникальных email подписчиков
-        recipient_list = list(subscriptions.values_list('user__email', flat=True))
+        recipient_list = list(subscriptions.values_list("user__email", flat=True))
 
         # Отправка письма
         send_mail(
-            subject=f'Обновление курса: {course.name}',
-            message=f'Курс "{course.name}" был обновлен. Зайдите на платформу для просмотра новых материалов.\n\nСсылка: http://localhost:8000/courses/{course.id}/',
+            subject=f"Обновление курса: {course.name}",
+            message=f'Курс "{course.name}" был обновлен. Зайдите на платформу для просмотра новых материалов.'
+            f"\n\nСсылка: http://localhost:8000/courses/{course.id}/",
             from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=recipient_list,
             fail_silently=False,
@@ -31,7 +32,7 @@ def send_course_update_notification(course_id):
         return f'Уведомления отправлены {subscriptions.count()} подписчикам курса "{course.name}"'
 
     except Course.DoesNotExist:
-        return f'Курс с id={course_id} не найден'
+        return f"Курс с id={course_id} не найден"
 
 
 @shared_task
@@ -51,9 +52,9 @@ def send_course_update_notification_with_throttle(course_id):
     subscriptions = Subscription.objects.filter(course=course)
 
     if subscriptions.exists():
-        recipient_list = list(subscriptions.values_list('user__email', flat=True))
+        recipient_list = list(subscriptions.values_list("user__email", flat=True))
         send_mail(
-            subject=f'Обновление курса: {course.name}',
+            subject=f"Обновление курса: {course.name}",
             message=f'Курс "{course.name}" был обновлен. Зайдите на платформу для просмотра новых материалов.',
             from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=recipient_list,
@@ -62,7 +63,7 @@ def send_course_update_notification_with_throttle(course_id):
 
         # Обновляем время последнего уведомления
         course.last_notification_sent = timezone.now()
-        course.save(update_fields=['last_notification_sent'])
+        course.save(update_fields=["last_notification_sent"])
 
         return f'Уведомления отправлены {subscriptions.count()} подписчикам курса "{course.name}"'
 
@@ -80,18 +81,18 @@ def check_inactive_users():
     inactive_users = User.objects.filter(last_login__lt=threshold_date, is_active=True)
 
     # Логика для неактивных пользователей
-    return f'Найдено {inactive_users.count()} неактивных пользователей'
+    return f"Найдено {inactive_users.count()} неактивных пользователей"
 
 
 @shared_task
 def debug_task():
     """Отладочная задача"""
-    print('Периодическая задача выполнена')
-    return 'OK'
+    print("Периодическая задача выполнена")
+    return "OK"
 
 
 @shared_task
 def debug_periodic_task():
     """Отладочная периодическая задача"""
-    print('Периодическая задача выполнена через celery-beat')
-    return 'OK'
+    print("Периодическая задача выполнена через celery-beat")
+    return "OK"

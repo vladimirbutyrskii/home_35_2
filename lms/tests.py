@@ -21,14 +21,14 @@ class LessonTests(TestCase):
             email="user@test.com",
             password="testpass123",
             first_name="Test",
-            last_name="User"
+            last_name="User",
         )
 
         self.moderator = User.objects.create_user(
             email="moderator@test.com",
             password="testpass123",
             first_name="Moderator",
-            last_name="User"
+            last_name="User",
         )
 
         # Создаем группу модераторов и добавляем пользователя
@@ -39,14 +39,12 @@ class LessonTests(TestCase):
             email="other@test.com",
             password="testpass123",
             first_name="Other",
-            last_name="User"
+            last_name="User",
         )
 
         # Создаем курс
         self.course = Course.objects.create(
-            name="Test Course",
-            description="Test Description",
-            owner=self.user
+            name="Test Course", description="Test Description", owner=self.user
         )
 
         # Создаем урок
@@ -55,7 +53,7 @@ class LessonTests(TestCase):
             description="Test Lesson Description",
             course=self.course,
             link_video="https://www.youtube.com/watch?v=abc123",
-            owner=self.user
+            owner=self.user,
         )
 
         # Создаем второй урок для другого пользователя
@@ -64,7 +62,7 @@ class LessonTests(TestCase):
             description="Other Lesson Description",
             course=self.course,
             link_video="https://www.youtube.com/watch?v=xyz789",
-            owner=self.other_user
+            owner=self.other_user,
         )
 
     def test_create_lesson_authenticated(self):
@@ -76,7 +74,7 @@ class LessonTests(TestCase):
             "name": "New Lesson",
             "description": "New Description",
             "course": self.course.id,
-            "link_video": "https://www.youtube.com/watch?v=new123"
+            "link_video": "https://www.youtube.com/watch?v=new123",
         }
 
         response = self.client.post(url, data)
@@ -92,7 +90,7 @@ class LessonTests(TestCase):
             "name": "New Lesson",
             "description": "New Description",
             "course": self.course.id,
-            "link_video": "https://www.youtube.com/watch?v=new123"
+            "link_video": "https://www.youtube.com/watch?v=new123",
         }
 
         response = self.client.post(url, data)
@@ -108,7 +106,7 @@ class LessonTests(TestCase):
             "name": "Moderator Lesson",
             "description": "Moderator Description",
             "course": self.course.id,
-            "link_video": "https://www.youtube.com/watch?v=mod123"
+            "link_video": "https://www.youtube.com/watch?v=mod123",
         }
 
         response = self.client.post(url, data)
@@ -124,7 +122,7 @@ class LessonTests(TestCase):
             "name": "Invalid Link Lesson",
             "description": "Test",
             "course": self.course.id,
-            "link_video": "https://rutube.ru/video/123"
+            "link_video": "https://rutube.ru/video/123",
         }
 
         response = self.client.post(url, data)
@@ -259,22 +257,18 @@ class SubscriptionTests(TestCase):
 
         # Создаем пользователей
         self.user = User.objects.create_user(
-            email="user@test.com",
-            password="testpass123"
+            email="user@test.com", password="testpass123"
         )
         self.other_user = User.objects.create_user(
-            email="other@test.com",
-            password="testpass123"
+            email="other@test.com", password="testpass123"
         )
 
         # Создаем курсы
         self.course1 = Course.objects.create(
-            name="Course 1",
-            description="Description 1"
+            name="Course 1", description="Description 1"
         )
         self.course2 = Course.objects.create(
-            name="Course 2",
-            description="Description 2"
+            name="Course 2", description="Description 2"
         )
 
     def test_add_subscription(self):
@@ -382,26 +376,21 @@ class CourseTests(TestCase):
         self.client = APIClient()
 
         self.user = User.objects.create_user(
-            email="user@test.com",
-            password="testpass123"
+            email="user@test.com", password="testpass123"
         )
 
         self.moderator = User.objects.create_user(
-            email="moderator@test.com",
-            password="testpass123"
+            email="moderator@test.com", password="testpass123"
         )
         moderator_group, _ = Group.objects.get_or_create(name="moderators")
         self.moderator.groups.add(moderator_group)
 
         self.other_user = User.objects.create_user(
-            email="other@test.com",
-            password="testpass123"
+            email="other@test.com", password="testpass123"
         )
 
         self.course = Course.objects.create(
-            name="Test Course",
-            description="Test Description",
-            owner=self.user
+            name="Test Course", description="Test Description", owner=self.user
         )
 
     def test_create_course_authenticated(self):
@@ -409,10 +398,7 @@ class CourseTests(TestCase):
         self.client.force_authenticate(user=self.user)
 
         url = reverse("lms:courses-list")
-        data = {
-            "name": "New Course",
-            "description": "New Description"
-        }
+        data = {"name": "New Course", "description": "New Description"}
 
         response = self.client.post(url, data)
 
@@ -424,10 +410,7 @@ class CourseTests(TestCase):
         self.client.force_authenticate(user=self.moderator)
 
         url = reverse("lms:courses-list")
-        data = {
-            "name": "Moderator Course",
-            "description": "Test"
-        }
+        data = {"name": "Moderator Course", "description": "Test"}
 
         response = self.client.post(url, data)
 

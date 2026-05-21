@@ -21,14 +21,24 @@ class Command(BaseCommand):
         lesson_ct = ContentType.objects.get_for_model(Lesson)
 
         # Права для курсов
-        view_course = Permission.objects.get(codename="view_course", content_type=course_ct)
-        change_course = Permission.objects.get(codename="change_course", content_type=course_ct)
+        view_course = Permission.objects.get(
+            codename="view_course", content_type=course_ct
+        )
+        change_course = Permission.objects.get(
+            codename="change_course", content_type=course_ct
+        )
 
         # Права для уроков
-        view_lesson = Permission.objects.get(codename="view_lesson", content_type=lesson_ct)
-        change_lesson = Permission.objects.get(codename="change_lesson", content_type=lesson_ct)
+        view_lesson = Permission.objects.get(
+            codename="view_lesson", content_type=lesson_ct
+        )
+        change_lesson = Permission.objects.get(
+            codename="change_lesson", content_type=lesson_ct
+        )
 
         # Назначаем права группе
-        moderator_group.permissions.set([view_course, change_course, view_lesson, change_lesson])
+        moderator_group.permissions.set(
+            [view_course, change_course, view_lesson, change_lesson]
+        )
 
         self.stdout.write(self.style.SUCCESS("Права для модераторов успешно назначены"))

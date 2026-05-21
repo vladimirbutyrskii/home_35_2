@@ -24,8 +24,15 @@ class UserDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = [
-            "id", "email", "phone", "city", "avatar", "first_name", "last_name",
-            "date_joined", "payments"
+            "id",
+            "email",
+            "phone",
+            "city",
+            "avatar",
+            "first_name",
+            "last_name",
+            "date_joined",
+            "payments",
         ]
 
 
@@ -36,7 +43,15 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ["email", "password", "first_name", "last_name", "phone", "city", "avatar"]
+        fields = [
+            "email",
+            "password",
+            "first_name",
+            "last_name",
+            "phone",
+            "city",
+            "avatar",
+        ]
 
     def create(self, validated_data):
         password = validated_data.pop("password")
@@ -51,5 +66,13 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ["id", "email", "phone", "city", "avatar", "first_name", "last_name", "payments"]
-
+        fields = [
+            "id",
+            "email",
+            "phone",
+            "city",
+            "avatar",
+            "first_name",
+            "last_name",
+            "payments",
+        ]

@@ -15,4 +15,3 @@ class Command(BaseCommand):
         user.set_password("admin123")
         user.save()
         self.stdout.write(self.style.SUCCESS("Суперпользователь создан"))
-        

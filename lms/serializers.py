@@ -9,7 +9,7 @@ class LessonSerializer(serializers.ModelSerializer):
         validators=[validate_youtube_link],
         required=False,
         allow_blank=True,
-        allow_null=True
+        allow_null=True,
     )
 
     class Meta:
@@ -56,10 +56,7 @@ class CourseSerializer(serializers.ModelSerializer):
         """Проверяет, подписан ли текущий пользователь на курс"""
         request = self.context.get("request")
         if request and request.user.is_authenticated:
-            return Subscription.objects.filter(
-                user=request.user,
-                course=obj
-            ).exists()
+            return Subscription.objects.filter(user=request.user, course=obj).exists()
         return False
 
 
@@ -68,5 +65,3 @@ class SubscriptionSerializer(serializers.ModelSerializer):
         model = Subscription
         fields = ["id", "user", "course", "created_at"]
         read_only_fields = ["id", "user", "created_at"]
-
-

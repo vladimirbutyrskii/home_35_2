@@ -1,7 +1,12 @@
-from django.urls import include, path
+from django.urls import path
 from rest_framework.routers import DefaultRouter
 from users.apps import UsersConfig
-from users.views import UserViewSet, PaymentListView, CreatePaymentView, PaymentIntentView
+from users.views import (
+    UserViewSet,
+    PaymentListView,
+    CreatePaymentView,
+    PaymentIntentView,
+)
 
 app_name = UsersConfig.name
 
@@ -13,4 +18,3 @@ urlpatterns = [
     path("create-payment/", CreatePaymentView.as_view(), name="create_payment"),
     path("create-payment-intent/", PaymentIntentView.as_view(), name="payment_intent"),
 ] + router.urls
-
